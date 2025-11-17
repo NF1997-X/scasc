@@ -6,7 +6,8 @@
     <title>File Sharing Platform</title>
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/ios-black-glass.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/button-enhancements.css') }}" rel="stylesheet">
 </head>
 <body>
     <!-- App Loading Screen -->
@@ -24,9 +25,15 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
                 <a class="navbar-brand" href="/">
-                    <i class="fas fa-cloud-upload-alt me-2"></i>
+                    <i class="fas fa-icloud-upload me-2" style="color: var(--ios-blue);"></i>
                     File Share
                 </a>
+                <div class="ms-auto">
+                    <a href="/demo" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-palette me-2"></i>
+                        Design Demo
+                    </a>
+                </div>
             </div>
         </nav>
 
@@ -37,18 +44,18 @@
         <!-- Upload Section -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card">
+                <div class="card glass-container">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <i class="fas fa-upload me-2"></i>
+                            <i class="fas fa-icloud-upload me-2" style="color: var(--ios-blue);"></i>
                             Upload Files
                         </h5>
                         
                         <!-- Drag and Drop Area -->
-                        <div id="dropZone" class="drop-zone mb-3">
+                        <div id="dropZone" class="drop-zone mb-3 interactive">
                             <div class="drop-zone-content">
                                 <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
-                                <p class="mb-2">Drag and drop files here or click to select</p>
+                                <p class="mb-2" style="font-weight: 500;">Drag and drop files here or click to select</p>
                                 <p class="text-muted small">Maximum file size: 500MB</p>
                                 <p class="text-muted small">Allowed types: txt, pdf, png, jpg, jpeg, gif, doc, docx, xls, xlsx, ppt, pptx, zip, rar, 7z, mp3, mp4, avi, mkv, mov, csv, json, xml, py, js, html, css, md</p>
                             </div>
@@ -77,12 +84,12 @@
                             <small id="uploadStatus" class="text-muted">Uploading...</small>
                         </div>
 
-                        <button id="uploadBtn" class="btn btn-primary">
-                            <i class="fas fa-upload me-2"></i>
+                        <button id="uploadBtn" class="btn btn-primary interactive">
+                            <i class="fas fa-icloud-upload me-2"></i>
                             Select Files
                         </button>
-                        <button id="confirmUploadBtn" class="btn btn-success ms-2" style="display: none;">
-                            <i class="fas fa-check me-2"></i>
+                        <button id="confirmUploadBtn" class="btn btn-success ms-2 interactive" style="display: none;">
+                            <i class="fas fa-checkmark me-2"></i>
                             Upload File
                         </button>
                     </div>
@@ -93,15 +100,15 @@
         <!-- Files List Section -->
         <div class="row">
             <div class="col-12">
-                <div class="card">
+                <div class="card glass-container">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="card-title mb-0">
-                                <i class="fas fa-folder me-2"></i>
+                                <i class="fas fa-folder me-2" style="color: var(--ios-blue);"></i>
                                 Your Files
                             </h5>
-                            <button id="refreshBtn" class="btn btn-outline-secondary btn-sm">
-                                <i class="fas fa-sync-alt me-1" id="refreshIcon"></i>
+                            <button id="refreshBtn" class="btn btn-outline-secondary btn-sm interactive">
+                                <i class="fas fa-arrow-clockwise me-1" id="refreshIcon"></i>
                                 Refresh
                             </button>
                         </div>
@@ -133,25 +140,46 @@
                                                 <td>{{ file.upload_date | formatdate }}</td>
                                                 <td>{{ file.download_count }}</td>
                                                 <td>
-                                                    <div class="d-flex gap-1 flex-wrap">
-                                                        <button class="btn btn-outline-success btn-sm view-btn" data-file-id="{{ file.id }}" data-file-name="{{ file.name }}" title="View">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
-                                                        <a href="/download/{{ file.id }}" class="btn btn-outline-primary btn-sm" title="Download">
-                                                            <i class="fas fa-download"></i>
-                                                        </a>
-                                                        <button class="btn btn-outline-info btn-sm share-btn" data-file-id="{{ file.id }}" data-share-token="{{ file.share_token }}" title="Share">
-                                                            <i class="fas fa-share"></i>
-                                                        </button>
-                                                        <button class="btn btn-outline-warning btn-sm edit-name-btn" data-file-id="{{ file.id }}" data-file-name="{{ file.name }}" title="Edit Name">
-                                                            <i class="fas fa-edit"></i>
-                                                        </button>
-                                                        <button class="btn btn-outline-secondary btn-sm settings-btn" data-file-id="{{ file.id }}" data-file-name="{{ file.name }}" title="Settings">
-                                                            <i class="fas fa-cog"></i>
-                                                        </button>
-                                                        <button class="btn btn-outline-danger btn-sm delete-btn" data-file-id="{{ file.id }}" title="Delete">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
+                                                    <div class="action-menu-container">
+                        <button class="btn btn-action-menu" data-file-id="{{ file.id }}" title="File Actions">
+                            <i class="fas fa-ellipsis-h action-icon"></i>
+                            <div class="loading-dots" style="display: none;">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </button>                                                        <div class="action-menu-dropdown" style="display: none;">
+                                                            <div class="action-menu-group">
+                                                                <button class="action-menu-item view-btn" data-file-id="{{ file.id }}" data-file-name="{{ file.name }}">
+                                                                    <i class="fas fa-eye" style="color: var(--ios-green);"></i>
+                                                                    <span>View</span>
+                                                                </button>
+                                                                <a href="/download/{{ file.id }}" class="action-menu-item">
+                                                                    <i class="fas fa-download" style="color: var(--ios-blue);"></i>
+                                                                    <span>Download</span>
+                                                                </a>
+                                                                <button class="action-menu-item share-btn" data-file-id="{{ file.id }}" data-share-token="{{ file.share_token }}">
+                                                                    <i class="fas fa-share" style="color: var(--ios-blue);"></i>
+                                                                    <span>Share</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="action-menu-separator"></div>
+                                                            <div class="action-menu-group">
+                                                                <button class="action-menu-item edit-name-btn" data-file-id="{{ file.id }}" data-file-name="{{ file.name }}">
+                                                                    <i class="fas fa-edit" style="color: var(--ios-orange);"></i>
+                                                                    <span>Edit Name</span>
+                                                                </button>
+                                                                <button class="action-menu-item settings-btn" data-file-id="{{ file.id }}" data-file-name="{{ file.name }}">
+                                                                    <i class="fas fa-cog" style="color: var(--ios-gray);"></i>
+                                                                    <span>Settings</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="action-menu-separator"></div>
+                                                            <div class="action-menu-group">
+                                                                <button class="action-menu-item delete-btn" data-file-id="{{ file.id }}">
+                                                                    <i class="fas fa-trash" style="color: var(--ios-red);"></i>
+                                                                    <span>Delete</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -360,6 +388,40 @@
                 }, 500);
             }, 1000); // Show loader for 1 second
         });
+
+        // Enhanced button interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enhanced hover effects for table rows
+            document.querySelectorAll('.table tbody tr').forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateX(4px) scale(1.01)';
+                    const actionBtn = this.querySelector('.btn-action-menu');
+                    if (actionBtn) {
+                        actionBtn.style.transform = 'scale(1.05)';
+                    }
+                });
+
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateX(0) scale(1)';
+                    const actionBtn = this.querySelector('.btn-action-menu');
+                    if (actionBtn && !actionBtn.classList.contains('active')) {
+                        actionBtn.style.transform = 'scale(1)';
+                    }
+                });
+            });
+        });
+
+        // Add ripple animation keyframes
+        const rippleStyle = document.createElement('style');
+        rippleStyle.textContent = `
+            @keyframes rippleEffect {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(rippleStyle);
     </script>
 
     <!-- Custom filters for Jinja2 -->

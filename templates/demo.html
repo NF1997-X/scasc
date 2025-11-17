@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Black Glass Demo - File Sharing Platform</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/ios-black-glass.css') }}" rel="stylesheet">
+    <style>
+        /* Demo specific styles */
+        .demo-section {
+            margin: 2rem 0;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .demo-card {
+            padding: 1.5rem;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .color-box {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-medium);
+            border: 2px solid var(--glass-border);
+            backdrop-filter: var(--blur-light);
+            -webkit-backdrop-filter: var(--blur-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .color-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .component-showcase {
+            display: grid;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .showcase-item {
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-sparkles me-2" style="color: var(--ios-blue);"></i>
+                iOS Black Glass Demo
+            </a>
+            <div class="ms-auto">
+                <button class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Back to App
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Hero Section -->
+        <div class="demo-section">
+            <div class="card glass-container text-center">
+                <div class="card-body p-5">
+                    <h1 class="display-4 mb-3">
+                        <i class="fas fa-mobile-alt me-3" style="color: var(--ios-blue);"></i>
+                        iOS Black Glass Design
+                    </h1>
+                    <p class="lead mb-4" style="color: var(--text-secondary);">
+                        A modern, glassmorphic design system inspired by iOS with dark theme and premium glass effects
+                    </p>
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <i class="fas fa-palette fa-2x mb-3" style="color: var(--ios-purple);"></i>
+                            <h5>Modern Colors</h5>
+                            <p style="color: var(--text-secondary);">iOS system colors with glass transparency</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-layer-group fa-2x mb-3" style="color: var(--ios-green);"></i>
+                            <h5>Glass Effects</h5>
+                            <p style="color: var(--text-secondary);">Backdrop blur and translucent surfaces</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-magic fa-2x mb-3" style="color: var(--ios-orange);"></i>
+                            <h5>Smooth Animations</h5>
+                            <p style="color: var(--text-secondary);">Fluid transitions and interactions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="demo-section">
+            <div class="card glass-container">
+                <div class="card-body">
+                    <h3 class="mb-4">
+                        <i class="fas fa-palette me-2" style="color: var(--ios-blue);"></i>
+                        iOS Color Palette
+                    </h3>
+                    <div class="color-palette">
+                        <div class="color-box" style="background: var(--ios-blue);">BLUE</div>
+                        <div class="color-box" style="background: var(--ios-green);">GREEN</div>
+                        <div class="color-box" style="background: var(--ios-red);">RED</div>
+                        <div class="color-box" style="background: var(--ios-orange);">ORANGE</div>
+                        <div class="color-box" style="background: var(--ios-yellow); color: black;">YELLOW</div>
+                        <div class="color-box" style="background: var(--ios-purple);">PURPLE</div>
+                        <div class="color-box" style="background: var(--ios-pink);">PINK</div>
+                        <div class="color-box" style="background: var(--ios-gray);">GRAY</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Components Grid -->
+        <div class="demo-section">
+            <h3 class="mb-4 text-center">
+                <i class="fas fa-cubes me-2" style="color: var(--ios-blue);"></i>
+                Component Showcase
+            </h3>
+            <div class="demo-grid">
+                <!-- Buttons -->
+                <div class="card glass-container demo-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-hand-pointer me-2" style="color: var(--ios-blue);"></i>
+                        Buttons
+                    </h5>
+                    <div class="d-flex flex-column gap-2 w-100">
+                        <button class="btn btn-primary interactive">Primary Button</button>
+                        <button class="btn btn-success interactive">Success Button</button>
+                        <button class="btn btn-outline-primary interactive">Outline Button</button>
+                        <button class="btn btn-danger interactive">Danger Button</button>
+                    </div>
+                </div>
+
+                <!-- Forms -->
+                <div class="card glass-container demo-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-edit me-2" style="color: var(--ios-green);"></i>
+                        Form Controls
+                    </h5>
+                    <div class="w-100">
+                        <input type="text" class="form-control mb-2" placeholder="Text Input">
+                        <select class="form-control mb-2">
+                            <option>Select Option</option>
+                            <option>Option 1</option>
+                        </select>
+                        <textarea class="form-control" placeholder="Textarea" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- Alerts -->
+                <div class="card glass-container demo-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-exclamation-triangle me-2" style="color: var(--ios-orange);"></i>
+                        Alerts
+                    </h5>
+                    <div class="w-100">
+                        <div class="alert alert-success">Success message!</div>
+                        <div class="alert alert-warning">Warning message!</div>
+                        <div class="alert alert-danger">Error message!</div>
+                        <div class="alert alert-info">Info message!</div>
+                    </div>
+                </div>
+
+                <!-- Progress -->
+                <div class="card glass-container demo-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-chart-line me-2" style="color: var(--ios-purple);"></i>
+                        Progress Bars
+                    </h5>
+                    <div class="w-100">
+                        <div class="progress mb-2">
+                            <div class="progress-bar" style="width: 25%"></div>
+                        </div>
+                        <div class="progress mb-2">
+                            <div class="progress-bar" style="width: 50%"></div>
+                        </div>
+                        <div class="progress mb-2">
+                            <div class="progress-bar" style="width: 75%"></div>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="card glass-container demo-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-table me-2" style="color: var(--ios-pink);"></i>
+                        Data Table
+                    </h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Item 1</td>
+                                    <td><span class="badge bg-success">Active</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Item 2</td>
+                                    <td><span class="badge bg-warning">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Item 3</td>
+                                    <td><span class="badge bg-danger">Error</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Drop Zone -->
+                <div class="card glass-container demo-card">
+                    <h5 class="mb-3">
+                        <i class="fas fa-cloud-upload-alt me-2" style="color: var(--ios-blue);"></i>
+                        Drop Zone
+                    </h5>
+                    <div class="drop-zone w-100 interactive" style="min-height: 120px; padding: 2rem;">
+                        <div class="drop-zone-content">
+                            <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i>
+                            <p class="mb-0">Drag files here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Glass Effect Demo -->
+        <div class="demo-section">
+            <div class="card glass-container">
+                <div class="card-body">
+                    <h3 class="mb-4">
+                        <i class="fas fa-layer-group me-2" style="color: var(--ios-blue);"></i>
+                        Glass Effect Layers
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card glass-container mb-3" style="background: var(--glass-bg);">
+                                <div class="card-body text-center">
+                                    <h6>Light Glass</h6>
+                                    <p class="small mb-0">background: var(--glass-bg)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card glass-container mb-3" style="background: var(--glass-bg-light);">
+                                <div class="card-body text-center">
+                                    <h6>Lighter Glass</h6>
+                                    <p class="small mb-0">background: var(--glass-bg-light)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card glass-container mb-3" style="background: var(--glass-bg-dark);">
+                                <div class="card-body text-center">
+                                    <h6>Dark Glass</h6>
+                                    <p class="small mb-0">background: var(--glass-bg-dark)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="demo-section">
+            <div class="card glass-container">
+                <div class="card-body">
+                    <h3 class="mb-4 text-center">
+                        <i class="fas fa-star me-2" style="color: var(--ios-blue);"></i>
+                        Design Features
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-check-circle me-3 mt-1" style="color: var(--ios-green); font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6>Glassmorphism Effects</h6>
+                                    <p class="mb-0" style="color: var(--text-secondary);">Backdrop blur filters and translucent backgrounds for modern glass appearance</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-check-circle me-3 mt-1" style="color: var(--ios-green); font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6>iOS System Colors</h6>
+                                    <p class="mb-0" style="color: var(--text-secondary);">Authentic iOS color palette with proper contrast ratios</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-check-circle me-3 mt-1" style="color: var(--ios-green); font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6>Smooth Animations</h6>
+                                    <p class="mb-0" style="color: var(--text-secondary);">Fluid transitions using cubic-bezier curves for natural motion</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-check-circle me-3 mt-1" style="color: var(--ios-green); font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6>Responsive Design</h6>
+                                    <p class="mb-0" style="color: var(--text-secondary);">Mobile-first approach with touch-friendly interactions</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-check-circle me-3 mt-1" style="color: var(--ios-green); font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6>Accessibility Ready</h6>
+                                    <p class="mb-0" style="color: var(--text-secondary);">High contrast support and reduced motion preferences</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-check-circle me-3 mt-1" style="color: var(--ios-green); font-size: 1.2rem;"></i>
+                                <div>
+                                    <h6>Safari Optimized</h6>
+                                    <p class="mb-0" style="color: var(--text-secondary);">Enhanced webkit backdrop filters for perfect Safari rendering</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="demo-section text-center">
+            <div class="card glass-container">
+                <div class="card-body p-5">
+                    <h3 class="mb-3">Ready to Experience iOS Black Glass?</h3>
+                    <p class="mb-4" style="color: var(--text-secondary);">
+                        Go back to the main application to see the design in action with real functionality.
+                    </p>
+                    <a href="/" class="btn btn-primary btn-lg interactive">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Back to Application
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Demo interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'slideInUp 0.6s ease forwards';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.demo-section').forEach((section) => {
+                observer.observe(section);
+            });
+
+            // Add ripple effect to interactive elements
+            document.querySelectorAll('.interactive').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: rippleEffect 0.6s ease-out;
+                        pointer-events: none;
+                    `;
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        });
+
+        // CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rippleEffect {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

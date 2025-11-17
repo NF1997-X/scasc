@@ -6,33 +6,27 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
 from flask import Flask, request, jsonify, render_template, send_file, abort, url_for
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
 import pytz
 import logging
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-
-class Base(DeclarativeBase):
-    pass
-
-
-db = SQLAlchemy(model_class=Base)
-
 # create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET")
+app.secret_key = os.environ.get("SESSION_SECRET", "development-key-change-in-production")
 app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB max file size
 
 # configure the database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+database_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instance', 'app.db')
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", f"sqlite:///{database_path}")
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
 }
-# initialize the app with the extension
+
+# Import and initialize database
+from models import db, FileMetadata
 db.init_app(app)
 
 # Custom Jinja2 filters
@@ -79,7 +73,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Import models after db is configured
 with app.app_context():
-    from models import FileMetadata  # noqa: F401
     db.create_all()
     
 
@@ -96,22 +89,18 @@ def allowed_file(filename):
 
 def get_all_files():
     """Get all file metadata from database"""
-    from models import FileMetadata
     return FileMetadata.query.all()
 
 def get_file_by_id(file_id):
     """Get file metadata by ID from database"""
-    from models import FileMetadata
     return FileMetadata.query.filter_by(id=file_id).first()
 
 def get_file_by_share_token(share_token):
     """Get file metadata by share token from database"""
-    from models import FileMetadata
     return FileMetadata.query.filter_by(share_token=share_token).first()
 
 def get_file_by_hash(file_hash):
     """Get file metadata by hash from database"""
-    from models import FileMetadata
     return FileMetadata.query.filter_by(hash=file_hash).first()
 
 def generate_share_token():
@@ -151,10 +140,14 @@ def index():
     
     return render_template('index.html', files=files_list)
 
+@app.route('/demo')
+def demo():
+    """iOS Black Glass design demo page"""
+    return render_template('demo.html')
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     """Handle file upload"""
-    from models import FileMetadata
     
     try:
         if 'files' not in request.files:
@@ -367,7 +360,6 @@ def not_found(e):
 
 def migrate_json_to_database():
     """Migrate existing JSON metadata to PostgreSQL database"""
-    from models import FileMetadata
     
     with app.app_context():
         metadata_file = os.path.join('metadata', 'files.json')
@@ -442,7 +434,17 @@ def migrate_json_to_database():
                 app.logger.error(f'Migration error: {str(e)}')
 
 # Run migration on startup
-migrate_json_to_database()
+if __name__ == '__main__':
+    with app.app_context():
+        migrate_json_to_database()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    with app.app_context():
+        db.create_all()
+        migrate_json_to_database()
+    
+    # For production deployment
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') == 'development'
+    
+    app.run(host='0.0.0.0', port=port, debug=debug)

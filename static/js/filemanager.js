@@ -12,6 +12,7 @@ class FileManager {
         this.alertContainer = document.getElementById('alertContainer');
         
         this.selectedFiles = null;
+        this.outsideClickHandlerAdded = false;
         
         this.init();
     }
@@ -19,6 +20,7 @@ class FileManager {
     init() {
         this.setupEventListeners();
         this.setupDragAndDrop();
+        this.initializeActionMenus();
     }
 
     setupEventListeners() {
@@ -386,25 +388,48 @@ class FileManager {
                                 <td>${this.formatDate(file.upload_date)}</td>
                                 <td>${file.download_count}</td>
                                 <td>
-                                    <div class="d-flex gap-1 flex-wrap">
-                                        <button class="btn btn-outline-success btn-sm view-btn" data-file-id="${file.id}" data-file-name="${file.name}" title="View">
-                                            <i class="fas fa-eye"></i>
+                                    <div class="action-menu-container">
+                                        <button class="btn btn-action-menu" data-file-id="${file.id}" title="File Actions">
+                                            <i class="fas fa-ellipsis-h action-icon"></i>
+                                            <div class="loading-dots" style="display: none;">
+                                                <span></span><span></span><span></span>
+                                            </div>
                                         </button>
-                                        <a href="/download/${file.id}" class="btn btn-outline-primary btn-sm" title="Download">
-                                            <i class="fas fa-download"></i>
-                                        </a>
-                                        <button class="btn btn-outline-info btn-sm share-btn" data-file-id="${file.id}" data-share-token="${file.share_token}" title="Share">
-                                            <i class="fas fa-share"></i>
-                                        </button>
-                                        <button class="btn btn-outline-warning btn-sm edit-name-btn" data-file-id="${file.id}" data-file-name="${file.name}" title="Edit Name">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-outline-secondary btn-sm settings-btn" data-file-id="${file.id}" data-file-name="${file.name}" title="Settings">
-                                            <i class="fas fa-cog"></i>
-                                        </button>
-                                        <button class="btn btn-outline-danger btn-sm delete-btn" data-file-id="${file.id}" title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        
+                                        <div class="action-menu-dropdown" style="display: none;">
+                                            <div class="action-menu-group">
+                                                <button class="action-menu-item view-btn" data-file-id="${file.id}" data-file-name="${file.name}">
+                                                    <i class="fas fa-eye" style="color: var(--ios-green);"></i>
+                                                    <span>View</span>
+                                                </button>
+                                                <a href="/download/${file.id}" class="action-menu-item">
+                                                    <i class="fas fa-download" style="color: var(--ios-blue);"></i>
+                                                    <span>Download</span>
+                                                </a>
+                                                <button class="action-menu-item share-btn" data-file-id="${file.id}" data-share-token="${file.share_token}">
+                                                    <i class="fas fa-share" style="color: var(--ios-blue);"></i>
+                                                    <span>Share</span>
+                                                </button>
+                                            </div>
+                                            <div class="action-menu-separator"></div>
+                                            <div class="action-menu-group">
+                                                <button class="action-menu-item edit-name-btn" data-file-id="${file.id}" data-file-name="${file.name}">
+                                                    <i class="fas fa-edit" style="color: var(--ios-orange);"></i>
+                                                    <span>Edit Name</span>
+                                                </button>
+                                                <button class="action-menu-item settings-btn" data-file-id="${file.id}" data-file-name="${file.name}">
+                                                    <i class="fas fa-cog" style="color: var(--ios-gray);"></i>
+                                                    <span>Settings</span>
+                                                </button>
+                                            </div>
+                                            <div class="action-menu-separator"></div>
+                                            <div class="action-menu-group">
+                                                <button class="action-menu-item delete-btn" data-file-id="${file.id}">
+                                                    <i class="fas fa-trash" style="color: var(--ios-red);"></i>
+                                                    <span>Delete</span>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -415,6 +440,127 @@ class FileManager {
         `;
 
         filesContainer.innerHTML = tableHtml;
+        
+        // Re-initialize action menus after updating the list
+        this.initializeActionMenus();
+    }
+
+    initializeActionMenus() {
+        // Find all action menu buttons
+        const actionMenuButtons = document.querySelectorAll('.btn-action-menu');
+
+        // Add event listeners for action menu buttons
+        actionMenuButtons.forEach((button) => {
+            // Remove any existing listener first
+            button.removeEventListener('click', this.handleActionMenuClick);
+            
+            // Add new listener
+            button.addEventListener('click', (e) => {
+                this.handleActionMenuClick(e);
+            });
+        });
+
+        // Add outside click listener only once
+        if (!this.outsideClickHandlerAdded) {
+            document.addEventListener('click', (e) => {
+                this.handleOutsideClick(e);
+            });
+            this.outsideClickHandlerAdded = true;
+        }
+
+        // Handle menu item clicks with ripple effect
+        const menuItems = document.querySelectorAll('.action-menu-item');
+        
+        menuItems.forEach((item) => {
+            // Remove any existing listener
+            item.removeEventListener('click', this.handleMenuItemClick);
+            
+            // Add new listener
+            item.addEventListener('click', (e) => {
+                this.handleMenuItemClick(e);
+            });
+        });
+    }
+
+    handleActionMenuClick(e) {
+        e.stopPropagation();
+        
+        const button = e.currentTarget;
+        const dropdown = button.parentElement.querySelector('.action-menu-dropdown');
+        const isActive = button.classList.contains('active');
+        
+        // Close all other action menus
+        document.querySelectorAll('.btn-action-menu').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelectorAll('.action-menu-dropdown').forEach(dd => {
+            dd.classList.remove('show');
+        });
+        
+        // Toggle current menu
+        if (!isActive) {
+            button.classList.add('active');
+            dropdown.classList.add('show');
+            
+            // Add haptic feedback effect
+            button.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                button.style.transform = '';
+            }, 100);
+        }
+    }
+
+    handleOutsideClick(e) {
+        if (!e.target.closest('.action-menu-container')) {
+            document.querySelectorAll('.btn-action-menu').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.action-menu-dropdown').forEach(dd => {
+                dd.classList.remove('show');
+            });
+        }
+    }
+
+    handleMenuItemClick(e) {
+        const item = e.currentTarget;
+        
+        // Add ripple effect
+        const ripple = document.createElement('span');
+        const rect = item.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            left: ${x}px;
+            top: ${y}px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: rippleEffect 0.4s ease-out;
+            pointer-events: none;
+            z-index: 10;
+        `;
+        
+        item.style.position = 'relative';
+        item.style.overflow = 'hidden';
+        item.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 400);
+        
+        // Close menu after short delay
+        setTimeout(() => {
+
+            document.querySelectorAll('.btn-action-menu').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.action-menu-dropdown').forEach(dd => {
+                dd.classList.remove('show');
+            });
+        }, 200);
     }
 
     async deleteFile(fileId) {
@@ -660,5 +806,26 @@ class FileManager {
 
 // Initialize the file manager when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new FileManager();
+
+    window.fileManager = new FileManager();
+
 });
+
+// Fallback initialization
+window.addEventListener('load', () => {
+    if (!window.fileManager) {
+
+        window.fileManager = new FileManager();
+    }
+});
+
+// Additional debug function
+window.initActionMenusDebug = function() {
+
+    if (window.fileManager) {
+        window.fileManager.initializeActionMenus();
+    } else {
+
+        window.fileManager = new FileManager();
+    }
+};
